@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "commonjs",
+    "target": "es2016",
+    "sourceMap": true,  
+    "baseUrl": "./src",
+    "removeComments": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "experimentalDecorators": true, // Required for sequelize types
+    "emitDecoratorMetadata": true   // Required for sequelize types
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
+}
