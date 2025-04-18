@@ -1,9 +1,22 @@
+import { BrowserRouter as Router, Route, Routes } from 'react-router'
+// https://reactrouter.com/start/declarative/routing
+
+import { NavBar } from './components/NavBar'
+import { Admin } from './pages/admin/Admin.tsx'
+import { Draft } from './pages/draft/Draft.tsx'
+
 function App() {
 
   return (
-    <main>
-      <h1>Draft Application</h1>
-    </main>
+    <Router>
+      <NavBar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Draft />} />
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </main>
+    </Router>
   )
 }
 
