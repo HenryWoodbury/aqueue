@@ -3,14 +3,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface IPlayer {
   ottoneuID: string;
-  name: string;
+  name?: string;
+  salary?: string;
+  teamID?: string;
 }
 
-// Create an initial state value for the reducer, with that type
 const initialState: IPlayer[] = [
   { 
     ottoneuID: '1',
     name: 'Otto Neu',
+    salary: '$3',
+    teamID: '3213',
   }
 ]
 
@@ -21,11 +24,19 @@ const queueSlice = createSlice({
   reducers: {
     addPlayer(state, action: PayloadAction<IPlayer>) {
       state.push(action.payload)
+    },
+    editPlayer(state, action: PayloadAction<IPlayer>) {
+      const { ottoneuID, salary } = action.payload
+      const playerInQueue = state.find(player => player.ottoneuID === ottoneuID)
+      if (playerInQueue) {
+        playerInQueue.salary = salary
+      }      
     }
-  }
+  },
+// Potentiall add selectors here, then export them with queueSlice.selectors
 })
 
-export const { addPlayer } = queueSlice.actions
+export const { addPlayer, editPlayer } = queueSlice.actions
 
 // Export the generated reducer function
 export default queueSlice.reducer
