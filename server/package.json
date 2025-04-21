@@ -1,14 +1,13 @@
 {
-  "name": "draft-queue",
-  "version": "1.0.0",
+  "name": "draft-queue-server",
+  "version": "0.0.1",
   "description": "Fantasy Draft Server",
-  "main": "index.ts",
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
   },
-  "author": "",
+  "author": "Henry Woodbury",
   "license": "ISC",
   "dependencies": {
     "@json2csv/plainjs": "^7.0.6",
