@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
+import { RootState } from '../../app/store.ts'
 
 export interface IPlayer {
   ottoneuID: string;
@@ -17,12 +18,17 @@ export interface IRoster {
   salary: string;
   fgMajorLeagueID?: string;
   fgMinorLeagueID?: string;
-  teamID: string;
+  teamId: string;
   teamName: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
 }
+
+export const selectAllRosters = (state: RootState) => state.rosters
+
+export const selectRostersByTeam = (state: RootState, teamId: string | null) => 
+  state.rosters.filter(roster => roster.teamId === teamId)
 
 // Create an initial state value for the reducer, with that type
 const initialState: IRoster[] = [
@@ -33,7 +39,7 @@ const initialState: IRoster[] = [
     position: 'SS',
     salary: '$1',
     fgMajorLeagueID: '1009525',
-    teamID: '3213',
+    teamId: '1042',
     teamName: 'Hold the Mayo',
   }
 ]
@@ -42,14 +48,8 @@ const initialState: IRoster[] = [
 const rostersSlice = createSlice({
   name: 'rosters',
   initialState,
-  reducers: {
-    playerAdded(state, action: PayloadAction<IRoster>) {
-      state.push(action.payload)
-    }
-  }
+  reducers: {}
 })
-
-export const { playerAdded } = rostersSlice.actions
 
 // Export the generated reducer function
 export default rostersSlice.reducer

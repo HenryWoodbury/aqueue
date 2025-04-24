@@ -6,8 +6,8 @@ const Draft = () => {
   return (
     <>
       <Rosters />
-      <AddToQueue teamID="3213" />
-      <Queue teamID="3213" />
+      <AddToQueue />
+      <Queue />
     </>
   )
 }

@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 
 import { IPlayer } from '../queue/queueSlice'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { editPlayer } from './queueSlice';
+import { editPlayer, removePlayer, selectQueue } from './queueSlice'
+import { selectTeam } from '../teams/teamSlice'
 
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
 export interface EditQueueFormFields extends HTMLFormControlsCollection {
@@ -13,14 +14,19 @@ interface EditQueueFormElements extends HTMLFormElement {
   readonly elements: EditQueueFormFields
 }
 
-const Queue = ({ teamID }: { teamID: string }) => {
+const Queue = () => {
   const [player, setplayer] = useState<IPlayer | null>(null)
+
 
   const dispatch = useAppDispatch()
 
-  const queue = useAppSelector(state =>
-    state.queue.filter(queue => queue.teamID === teamID)
-  )
+//  https://redux.js.org/usage/deriving-data-selectors#optimizing-selectors-with-memoization
+  const teamId = useAppSelector(state => selectTeam(state))
+  const queue = useAppSelector(state => selectQueue(state, teamId))
+
+  const handleRemovePlayer = (playerId: string) => {
+    dispatch(removePlayer({ ottoneuID: playerId }))
+  }
 
   const handleSubmit = (e: React.FormEvent<EditQueueFormElements>) => {
     e.preventDefault()
@@ -36,9 +42,13 @@ const Queue = ({ teamID }: { teamID: string }) => {
 
   const queueRender = queue.map(player => (
     <li key={player.ottoneuID}>
-      {player.name}, 
+      {player.name}
+      {` | `}
       {player.salary}
-      <a role="button" onClick={()=>setplayer(player)}>Edit Player</a>
+      {` | `}
+      <a role="button" onClick={() => setplayer(player)}>Edit Player</a>
+      {` | `}
+      <a role="button" onClick={() => handleRemovePlayer(player.ottoneuID)}>Remove Player</a>
     </li>
   ))
 
@@ -54,7 +64,7 @@ const Queue = ({ teamID }: { teamID: string }) => {
           <p> Queue is empty.</p>
         )
       }
-      {
+      { // TODO: Make into a separate component
         player ? (
           <form onSubmit={handleSubmit}>
             <p>

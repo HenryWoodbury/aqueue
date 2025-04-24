@@ -1,13 +1,17 @@
 import type { Action, ThunkAction } from '@reduxjs/toolkit'
 import { configureStore } from '@reduxjs/toolkit'
 
+import authReducer from '../features/auth/authSlice'
 import queueReducer from '../features/queue/queueSlice'
 import rostersReducer from '../features/rosters/rostersSlice'
+import teamReducer from '../features/teams/teamSlice'
 
 export const store = configureStore({
   reducer: {
+    auth: authReducer,
+    queue: queueReducer,
     rosters: rostersReducer,
-    queue: queueReducer
+    team: teamReducer
   }
 })
 

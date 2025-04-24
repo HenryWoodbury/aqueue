@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router'
 
 import { NavBar } from './components/NavBar'
 import { Team } from './features/teams/Team.tsx';
-import { Admin } from './pages/admin/Admin.tsx'
+import { Admin } from './features/auth/Admin.tsx'
 import { Draft } from './pages/draft/Draft.tsx'
 
 function App() {

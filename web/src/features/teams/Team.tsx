@@ -7,7 +7,7 @@ const Team = () => {
   const { teamId } = useParams()
 
   const team = useAppSelector(state =>
-    state.rosters.find(roster => roster.teamID === teamId)
+    state.rosters.find(roster => roster.teamId === teamId)
   )
 
   if (!team) {
