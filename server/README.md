@@ -22,7 +22,7 @@ Start the server with `npm run dev`
 ```
 curl -i -X POST \
    -H "Content-Type:multipart/form-data" \
-   -F "file=@\"./test/league_100_rosters.csv\";type=text/csv;filename=\"league_100_rosters.csv\"" \
+   -F "file=@\"./csv/league_100_rosters.csv\";type=text/csv;filename=\"league_100_rosters.csv\"" \
   http://localhost:8080/api/csv/upload
 ```
 
