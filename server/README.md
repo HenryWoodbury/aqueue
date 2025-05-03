@@ -15,7 +15,9 @@ With `docker-compose up` the container stops when the command is interupted (Ctr
 
 During development run `docker-compose down` to remove containers, networks, volumes, and images created by `up`. Otherwise, changes to `docker-compose.yml` won't get picked up between sessions. 
 
-# cURL Commands to test the Server`
+# cURL Commands to test the Endpoints`
+
+Start the server with `npm run dev`
 
 ```
 curl -i -X POST \
