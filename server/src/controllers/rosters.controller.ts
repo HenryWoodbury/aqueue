@@ -15,7 +15,25 @@ const getRosters = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export { getRosters };
+const getRosterByTeamId = (req: Request, res: Response, next: NextFunction) => {
+  const id = parseInt(req.params.teamId)
+  Rosters.findAll({
+    where: {
+      teamId: id.toString(),
+//      teamId: id.toString(),
+    },    
+  })
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => {
+    res.status(500).send({
+      message: err.message || "Error while retrieving rosters from the database.",
+    });
+  });
+};
+
+export { getRosters, getRosterByTeamId };
 
 
 /*

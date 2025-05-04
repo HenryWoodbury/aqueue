@@ -1,16 +1,23 @@
 import { useParams } from 'react-router-dom'
+import { useGetRosterByTeamIdQuery } from '../../services/rosters'
 
-import { useAppSelector } from '../../app/hooks'
+// import { useAppSelector } from '../../app/hooks'
 
-// For testing I can use the roster reducer, but will eventually
 const Team = () => {
   const { teamId } = useParams()
 
+  const { data, error, isLoading } = useGetRosterByTeamIdQuery(teamId || '')
+
+/*
   const team = useAppSelector(state =>
     state.rosters.find(roster => roster.teamId === teamId)
   )
+*/
+  const rosterList = data?.map(player => (
+    <li key={player.ottoneuId}>{player.playerName}, {player.salary}</li>
+  ))
 
-  if (!team) {
+  if (!data) {
     return (
       <section>
         <h2>Team not found!</h2>
@@ -21,8 +28,10 @@ const Team = () => {
   return (
     <section>
       <article className="post">
-        <h2>{team.teamName}</h2>
-        <p>Rosters here</p>
+        <h2>{teamId}</h2>
+        <ul className="roster-list">
+          {rosterList}
+        </ul>
       </article>
     </section>
   )

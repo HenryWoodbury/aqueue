@@ -1,11 +1,15 @@
 import { useAppSelector } from '../../app/hooks'
+import { useGetRostersQuery } from '../../services/rosters'
 
 const Rosters = () => {
-  // Select the `state.posts` value from the store into the component
+
+  const { data, error, isLoading } = useGetRostersQuery()
+  console.log(data)
+
   const rosters = useAppSelector(state => state.rosters)
 
   const rosterList = rosters.map(player => (
-    <li key={player.ottoneuID}>{player.name}, {player.salary}</li>
+    <li key={player.ottoneuId}>{player.playerName}, {player.salary}</li>
   ))
 
   return (

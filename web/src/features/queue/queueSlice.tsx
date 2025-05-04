@@ -2,23 +2,24 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { RootState } from '../../app/store.ts'
 
+// Extend the IPlayer in `types`?
 export interface IPlayer {
-  ottoneuID: string;
-  name?: string;
+  ottoneuId: string;
+  playerName?: string;
   salary?: string;
   teamId?: string;
 }
 
 const initialState: IPlayer[] = [
   { 
-    ottoneuID: '1',
-    name: 'Otto Neu',
+    ottoneuId: '1',
+    playerName: 'Otto Neu',
     salary: '$3',
     teamId: '3213',
   }
 ]
 
-export const selectQueue = (state: RootState, teamId: string | null) =>
+export const selectQueueByTeam = (state: RootState, teamId: string | null) =>
   state.queue.filter(queue => queue.teamId === teamId)
 
 // Create the slice and pass in the initial state
@@ -27,21 +28,21 @@ const queueSlice = createSlice({
   initialState,
   reducers: {
     addPlayer(state, action: PayloadAction<IPlayer>) {
-      const { ottoneuID } = action.payload
-      const playerInQueue = state.find(player => player.ottoneuID === ottoneuID)
+      const { ottoneuId } = action.payload
+      const playerInQueue = state.find(player => player.ottoneuId === ottoneuId)
       if (!playerInQueue)
         state.push(action.payload)
     },
     editPlayer(state, action: PayloadAction<IPlayer>) {
-      const { ottoneuID, salary } = action.payload
-      const playerInQueue = state.find(player => player.ottoneuID === ottoneuID)
+      const { ottoneuId, salary } = action.payload
+      const playerInQueue = state.find(player => player.ottoneuId === ottoneuId)
       if (playerInQueue) {
         playerInQueue.salary = salary
       }      
     },
     removePlayer(state, action: PayloadAction<IPlayer>) {
-      const { ottoneuID } = action.payload
-      return state.filter(player => player.ottoneuID !== ottoneuID)
+      const { ottoneuId } = action.payload
+      return state.filter(player => player.ottoneuId !== ottoneuId)
     }
   },
 // Could add selectors here, then export them with queueSlice.selectors

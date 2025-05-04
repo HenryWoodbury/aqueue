@@ -5,10 +5,12 @@ import { Parser as CsvParser } from '@json2csv/plainjs';
 
 import { Rosters, IRosterModel, IRosterProperties } from '../db/models/rosters.model';
 
-const upload = async (req: Request, res: Response, next: NextFunction) => {
+// Could abstract upload for different CSV files
+const uploadRosters = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.file) {
-      res.status(400).send("Please upload a CSV file!");
+      res.status(400).send("Please upload your league Rosters CSV file!");
+//    test req.file.filename === ...
       return;
     }
     const rosters = [] as IRosterModel[];
@@ -16,15 +18,33 @@ const upload = async (req: Request, res: Response, next: NextFunction) => {
     const path = "./resources/static/assets/uploads/" + req.file.filename;
 
     createReadStream(path)
-      .pipe(parse({ headers: true }))
+      .pipe(
+        parse({ 
+          headers: [
+            'teamId',
+            'teamName',
+            'ottoneuId',
+            'fgMajorLeagueId',
+            'fgMinorLeagueId',
+            'playerName',
+            'mlbTeam',
+            'position',
+            'salary'
+          ], 
+          renameHeaders: true 
+        })
+      )
       .on("error", (error) => {
         throw error.message;
       })
       .on("data", (row) => {
-        rosters.push(row);
+        if (row.ottoneuId) {
+          rosters.push(row);
+          row.createdAt = new Date();
+          row.updatedAt = new Date();
+        }
       })
       .on("end", () => {
-        // TODO: How do I overwrite the old table
         Rosters.bulkCreate(rosters)
           .then(() => {
             const fileName = req.file?.originalname ? req.file.originalname : 'unknown file';
@@ -34,7 +54,7 @@ const upload = async (req: Request, res: Response, next: NextFunction) => {
           })
           .catch((error) => {
             res.status(500).send({
-              message: "Couldn't import data into database!",
+              message: "Couldn't import data into database.",
               error: error.message,
             });
           });
@@ -48,7 +68,7 @@ const upload = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const download = (req: Request, res: Response, next: NextFunction) => {
+const downloadRosters = (req: Request, res: Response, next: NextFunction) => {
   Rosters.findAll().then((objs) => {
 
     const rosters = [] as IRosterProperties[];;
@@ -57,20 +77,14 @@ const download = (req: Request, res: Response, next: NextFunction) => {
       rosters.push({ ...obj });
     });
 
-// To set custom fields see https://juanjodiaz.github.io/json2csv/#/advanced-options/data-selection
     const csvParser = new CsvParser();
     const csvData = csvParser.parse(rosters);
 
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=employees.csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=rosters.csv');
 
     res.status(200).end(csvData);
   });
 };
 
-export default {
-  upload,
-  download,
-};
-
-export { upload, download };
+export { uploadRosters, downloadRosters };

@@ -14,7 +14,8 @@ const sequelize = new Sequelize(
     host: options.host,
     dialect: options.dialect,
     pool: { ...options.pool },
-    logging: console.log
+    logging: console.log,
+//    omitNull: true
   }
 );
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-import { IPlayer } from '../queue/queueSlice'
+import { IPlayer } from '../../types/rosters'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { editPlayer, removePlayer, selectQueue } from './queueSlice'
+import { editPlayer, removePlayer, selectQueueByTeam } from './queueSlice'
 import { selectTeam } from '../teams/teamSlice'
 
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
@@ -17,15 +17,14 @@ interface EditQueueFormElements extends HTMLFormElement {
 const Queue = () => {
   const [player, setplayer] = useState<IPlayer | null>(null)
 
-
   const dispatch = useAppDispatch()
 
 //  https://redux.js.org/usage/deriving-data-selectors#optimizing-selectors-with-memoization
   const teamId = useAppSelector(state => selectTeam(state))
-  const queue = useAppSelector(state => selectQueue(state, teamId))
+  const queue = useAppSelector(state => selectQueueByTeam(state, teamId))
 
   const handleRemovePlayer = (playerId: string) => {
-    dispatch(removePlayer({ ottoneuID: playerId }))
+    dispatch(removePlayer({ ottoneuId: playerId }))
   }
 
   const handleSubmit = (e: React.FormEvent<EditQueueFormElements>) => {
@@ -34,21 +33,21 @@ const Queue = () => {
     const salary = elements.salary.value;
 
     if (salary && player) {
-      dispatch(editPlayer({ ottoneuID: player.ottoneuID, salary: salary }))
+      dispatch(editPlayer({ ottoneuId: player.ottoneuId, salary: salary }))
       setplayer(null);
     }
     e.currentTarget.reset()
   }
 
   const queueRender = queue.map(player => (
-    <li key={player.ottoneuID}>
-      {player.name}
+    <li key={player.ottoneuId}>
+      {player.playerName}
       {` | `}
       {player.salary}
       {` | `}
       <a role="button" onClick={() => setplayer(player)}>Edit Player</a>
       {` | `}
-      <a role="button" onClick={() => handleRemovePlayer(player.ottoneuID)}>Remove Player</a>
+      <a role="button" onClick={() => handleRemovePlayer(player.ottoneuId)}>Remove Player</a>
     </li>
   ))
 
@@ -68,7 +67,7 @@ const Queue = () => {
         player ? (
           <form onSubmit={handleSubmit}>
             <p>
-              {player.name}
+              {player.playerName}
             </p>
             <p>
               <label htmlFor="salary">Salary:</label>

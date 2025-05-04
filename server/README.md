@@ -7,7 +7,9 @@ A Fantasy Draft Server.
 
 `docker-compose up` 
 
-This will run the database server in docker with the logs showing up in the local command line.
+This will run the database server in docker with the logs showing up in the local command line. 
+
+As a prerequesite, Docker Desktop needs to be running.
 
 https://docs.docker.com/reference/cli/docker/compose/up/
 
@@ -34,9 +36,8 @@ curl -i -X GET \
 # TODOs
 
 * How do I overwrite the csv import table?
-* I'll need to create a separate League table and maybe a Teams table and then use Team ID as a 
 
-# Library Upgrades
+# Library Updates
 
 (json2csv)[https://www.npmjs.com/package/json2csv] is no longer maintained. Individual utilities have been separated into their own repositories.
 

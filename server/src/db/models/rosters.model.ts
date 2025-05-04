@@ -3,70 +3,65 @@ import Sequelize, { DataTypes, InferAttributes, InferCreationAttributes, Model, 
 import { sequelize } from '../rosters.db';
 
 interface IRosterProperties {
-  "ottoneu ID": string;
-  Name: string;
-  "MLB Team"?: string;
-  "Position(s)": string;
-  Salary: string;
-  "FG MajorLeagueID": string;
-  "FG MinorLeagueID": string;
-  TeamID: string;
-  "Team Name": string;
+  teamId: string;
+  teamName: string;
+  ottoneuId: string;
+  playerName: string;
+  mlbTeam?: string;
+  position: string;
+  salary: string;
+  fgMajorLeagueId?: string;
+  fgMinorLeagueId?: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
 }
 
 interface IRosterModel extends Model<InferAttributes<IRosterModel>, InferCreationAttributes<IRosterModel>> {
-  "ottoneu ID": string;
-  Name: string;
-  "MLB Team"?: string;
-  "Position(s)": string;
-  Salary: string;
-  "FG MajorLeagueID": string;
-  "FG MinorLeagueID": string;
-  TeamID: string;
-  "Team Name": string;
+  teamId: string;
+  teamName: string;
+  ottoneuId: string;
+  playerName: string;
+  mlbTeam?: string;
+  position: string;
+  salary: string;
+  fgMajorLeagueId?: string;
+  fgMinorLeagueId?: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
 }
 
-// TODO: Map CSV to more optimal Database Field Names
-// Currently: TeamID,"Team Name","ottoneu ID","FG MajorLeagueID","FG MinorLeagueID",Name,"MLB Team",Position(s), Salary
-
 const Rosters = sequelize.define<IRosterModel>(
   'rosters', {
-    "ottoneu ID": {
+    teamId: {
+      type: Sequelize.STRING,
+    },
+    teamName: {
+      type: Sequelize.STRING
+    },
+    ottoneuId: {
       type: Sequelize.STRING,
       primaryKey: true
     },
-    Name: {
+    playerName: {
       type: Sequelize.STRING
     },
-    "MLB Team": {
+    mlbTeam: {
       type: Sequelize.STRING
     },
-    "Position(s)": {
+    position: {
       type: Sequelize.STRING
     },
-    Salary: {
+    salary: {
       type: Sequelize.STRING
     },
-    "FG MajorLeagueID": {
+    fgMajorLeagueId: {
       type: Sequelize.STRING
     },
-    "FG MinorLeagueID": {
+    fgMinorLeagueId: {
       type: Sequelize.STRING
     },
-    TeamID: {
-      type: Sequelize.STRING
-    },
-    "Team Name": {
-      type: Sequelize.STRING
-    }
-/*
-  TODO: Add createdAt: new Date(), updatedAt: new Date(), to `bulkCreate`
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE
@@ -78,7 +73,70 @@ const Rosters = sequelize.define<IRosterModel>(
     deletedAt: {
       type: DataTypes.DATE
     }
-*/
 });
 
 export { Rosters, IRosterModel, IRosterProperties };
+
+/*
+interface IRosterProperties {
+  teamId: string;
+  teamName: string;
+  ottoneuId: string;
+  playerName: string;
+  fgMajorLeagueId?: string;
+  fgMinorLeagueId?: string;
+  mlbTeam?: string;
+  position: string;
+  salary: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
+
+interface IRosterModel extends Model<InferAttributes<IRosterModel>, InferCreationAttributes<IRosterModel>> {
+  teamId: string;
+  teamName: string;
+  ottoneuId: string;
+  playerName: string;
+  fgMajorLeagueId?: string;
+  fgMinorLeagueId?: string;
+  mlbTeam?: string;
+  position: string;
+  salary: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
+
+const Rosters = sequelize.define<IRosterModel>(
+  'rosters', {
+    teamId: {
+      type: Sequelize.STRING,
+      primaryKey: true
+    },
+    teamName: {
+      type: Sequelize.STRING
+    },
+    ottoneuId: {
+      type: Sequelize.STRING,
+    },
+    fgMajorLeagueId: {
+      type: Sequelize.STRING
+    },
+    fgMinorLeagueId: {
+      type: Sequelize.STRING
+    },
+    playerName: {
+      type: Sequelize.STRING
+    },
+    mlbTeam: {
+      type: Sequelize.STRING
+    },
+    position: {
+      type: Sequelize.STRING
+    },
+    salary: {
+      type: Sequelize.STRING
+    },
+});
+*/
