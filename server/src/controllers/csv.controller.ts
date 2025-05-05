@@ -38,27 +38,43 @@ const uploadRosters = async (req: Request, res: Response, next: NextFunction) =>
         throw error.message;
       })
       .on("data", (row) => {
+        const newDate = new Date();
         if (row.ottoneuId) {
           rosters.push(row);
-          row.createdAt = new Date();
-          row.updatedAt = new Date();
+          row.createdAt = newDate;
+          row.updatedAt = newDate;
         }
       })
       .on("end", () => {
-        Rosters.bulkCreate(rosters)
-          .then(() => {
-            const fileName = req.file?.originalname ? req.file.originalname : 'unknown file';
-            res.status(200).send({
-              message: `The file ${fileName} got uploaded successfully!`,
-            });
-          })
-          .catch((error) => {
-            res.status(500).send({
-              message: "Couldn't import data into database.",
-              error: error.message,
-            });
-          });
+        // https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#creating-in-bulk
+        Rosters.bulkCreate(rosters, { updateOnDuplicate: [            
+          'teamId',
+          'teamName',
+          'fgMajorLeagueId',
+          'fgMinorLeagueId',
+          'playerName',
+          'mlbTeam',
+          'position',
+          'salary',
+          'updatedAt',
+        ]})
+// Delete any records where createdAt !== updatedAt ? 
+// Otherwise new upload will combine last upload records with new ones that aren't duplicates
+// Potentially use a beforeBulkCreate hook to call truncate() or destroyAll()
+// https://sequelize.org/docs/v6/other-topics/hooks/
+      .then(() => {
+        const fileName = req.file?.originalname ? req.file.originalname : 'unknown file';
+        res.status(200).send({
+          message: `The file ${fileName} got uploaded successfully!`,
+        });
+      })
+      .catch((error) => {
+        res.status(500).send({
+          message: "Couldn't import data into database.",
+          error: error.message,
+        });
       });
+    });
   } catch (error) {
     console.log(error);
     const fileName = req.file?.originalname ? req.file.originalname : 'unknown file';
@@ -70,9 +86,10 @@ const uploadRosters = async (req: Request, res: Response, next: NextFunction) =>
 
 const downloadRosters = (req: Request, res: Response, next: NextFunction) => {
   Rosters.findAll().then((objs) => {
-
     const rosters = [] as IRosterProperties[];;
-
+    
+    // This will include CreatedAt, UpdatedAt, DeletedAt
+    // Could filter these out easily enough
     objs.forEach((obj) => {
       rosters.push({ ...obj });
     });
@@ -88,3 +105,11 @@ const downloadRosters = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export { uploadRosters, downloadRosters };
+/*
+    const csvFields = ['id', 'name', 'email',
+                     'username', 'dob', 'company',
+                     'address', 'location', 'salary',
+                     'about', 'role'];
+    const csvParser = new CsvParser({ csvFields });
+    const csvData = csvParser.parse(employees);
+*/

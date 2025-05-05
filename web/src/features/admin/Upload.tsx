@@ -1,102 +1,107 @@
-/*
-import { useState, useEffect } from "react";
+import { useState } from 'react'
 
-export interface UploadFileFormFields extends HTMLFormControlsCollection {
-  upload: HTMLInputElement
-}
+import { useUploadRostersMutation } from '../../services/upload'
 
-const uploadToServer = (file, onUploadProgress) => {
-  let formData = new FormData();
+const Upload = () => {
+//  const [data, setData] = useState([]);
+  const [selectedFile, setSelectedFile] = useState<File>()
+//  const [currentFile, setCurrentFile] = useState<File>()
+//  const [progress, setProgress] = useState(0)
+  const [message, setMessage] = useState('')
 
-  formData.append("file", file);
+  // The destructured properties are generically named. Something to keep track of.
+  const [uploadFile, { data, isLoading, error}] = useUploadRostersMutation()
+  console.info('data', data)
+  console.info('error', error)
+  console.info('isLoading', isLoading)
 
-  return axios.post('http://localhost:8080/api/csv/upload', formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    onUploadProgress,
-  });
-};
+  // Some reading reveals all sorts of details in the way RTK Query handles file upload that
+  // differs from the common axios example.
+  // 1. Don't use a custom header ("Content-Type": "multipart/form-data") in the uploadApi. 
+  // 2. Don't use `formData: true` -- it is no longer needed for a FormData submission
+  // 3. RTK Query uses Fetch under the hood which doesn't expose a method to track progress
+  // https://github.com/reduxjs/redux-toolkit/discussions/2603
+  // This is in contrast to XhrRequest or Axios which exposes an `onUploadProgress` callback
+  // This article covers how to incorporate Axios into RTK using the `queryFn` property
+  // https://allafriken.hashnode.dev/how-to-track-upload-progress-using-reactjs-redux-toolkit-and-rtk-query
+  const handleUploadRostersSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+//    setCurrentFile(selectedFile)
+    uploadFile(selectedFile)
+//    const result = uploadFile(selectedFile)
+// The return value of the callback is a promise
+    setSelectedFile(undefined)
+  }
 
-function App() {
+  const selectFile =  (e: React.FormEvent) => {
+    e.preventDefault()
+    const target = e.target as HTMLInputElement
+    const file = target.files === null ? undefined : target.files[0]
 
-  const [data, setData] = useState([]);
-  const [selectedFiles, setSelectedFiles] = useState(undefined);
-  const [currentFile, setCurrentFile] = useState(undefined);
-  const [progress, setProgress] = useState(0);
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    (async () => {
-      const result = await axios("http://localhost:8080/api/employees");
-      setData(result.data);
-    })();
-  }, []);
-
-  const selectFile = (e: React.FormEvent<UploadFileFormFields>) => {
-*/
- /*
-    if (e.target.files === null) {
-      return
+    if (!file || file?.type !== 'text/csv') {
+      const errorMessage = !file ? 'File not found. Please select a file.' : 'Please upload a .csv file'
+      setMessage(errorMessage)
+      setSelectedFile(undefined)
+//      setCurrentFile(undefined)
+      return;
     }
-    const file = e.target.files[0]
-  
-    if (file) {
-      if (file.type !== 'text/csv') {
-        console.error('Please upload a .csv file')
-      }
-  
-      const fileReader = new FileReader()
+    setMessage('')
+// This can be used to validate the csv file before it is passed to the API
+/*
+    const fileReader = new FileReader()
+
       fileReader.onload = (event) => {
         const contents = event?.target?.result
         // do something with the file contents here
-      }
-  
-      e.target.value = ''
-      fileReader.readAsText(file)
-    } else {
-      console.error('File could not be uploaded. Please try again.')
-    }
+      }  
+
+    fileReader.readAsText(file)
+*/
+    setSelectedFile(file);
   }
-*//*
-    setSelectedFiles(e.target.files);
-  };
-
-  const handleUploadRostersSubmit = (e: React.FormEvent<UploadFileFormFields>) => {
-    e.preventDefault();
-
-    let currentFile = selectedFiles[0];
-
-    setProgress(0);
-    setCurrentFile(currentFile);
-
-    uploadToServer(currentFile, (e) => {
-      setProgress(Math.round((100 * e.loaded) / e.total));
-    })
-      .then(async (response) => {
-        setMessage(response.data.message);
-        const result = await axios("http://localhost:8080/api/employees");
-        setData(result.data);
-      })
-      .catch(() => {
-        setProgress(0);
-        setMessage("Could not upload the file!");
-        setCurrentFile(undefined);
-      });
-
-    setSelectedFiles(undefined);
-  };
 
   return (
-    <div>
+    <section>
+      <h2>
+        Upload Rosters
+      </h2>
+      {isLoading ? (
+        <div className="loading">
+          Loading...
+        </div>
+      ): null }
+
+      <form id="uploadRosters" onSubmit={handleUploadRostersSubmit}>
+        <label className="btn btn-default">
+          <input id="upload" type="file" onChange={selectFile} />
+        </label>
+        <button 
+          type="submit"
+          disabled={!selectedFile}
+        >
+          Upload Rosters
+        </button>
+      </form>
+
+      <p>
+        {message}
+      </p>
+    </section>
+  );
+}
+
+export { Upload }
+
+/*
+// Progress bar code (using Axios)
       {currentFile && (
         <div className="progress">
           <div
             className = "progress-bar progress-bar-info progress-bar-striped"
             role = "progressbar"            
             aria-valuenow = {progress}
-// Interesting. Typescript expects a number for aria-valuemin and aria-valuemin based on the `progressbar` role
-// Which is why the values are passed in as variables
+  // Typescript expects a number for aria-valuemin and aria-valuemin based on the `progressbar` role
+  // which is why the values are passed in as variables
             aria-valuemin = {0}
             aria-valuemax = {100}
             style = {{ width: progress + "%" }}
@@ -105,24 +110,4 @@ function App() {
           </div>
         </div>
       )}
-
-      <form id="uploadRosters" onSubmit={handleUploadRostersSubmit}>
-        <label className="btn btn-default">
-          <input id="upload" type="file" onChange={selectFile} />
-        </label>
-        <button 
-          type="submit"
-          disabled={!selectedFiles}
-        >
-          Upload Rosters
-        </button>
-      </form>
-
-      <div className="alert alert-light" role="alert">
-        {message}
-      </div>
-    </div>
-  );
-}
-
 */

@@ -6,26 +6,21 @@ import { selectTeam, teamSelected } from '../teams/teamSlice'
 
 import { selectUser } from '../auth/authSlice'
 
-interface AdminPageFormFields extends HTMLFormControlsCollection {
+interface SettingsPageFormFields extends HTMLFormControlsCollection {
   team: HTMLSelectElement
 }
 
-interface AdminPageFormElements extends HTMLFormElement {
-  readonly elements: AdminPageFormFields
+interface SettingsPageFormElements extends HTMLFormElement {
+  readonly elements: SettingsPageFormFields
 }
 
-export const Admin = () => {
+export const Settings = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const teamId = useAppSelector(selectTeam)
   const userId = useAppSelector(selectUser)
 
-  const handleUploadRostersSubmit = (e: React.FormEvent<AdminPageFormElements>) => {
-    e.preventDefault()
-
-  }
-
-  const handleSelectTeamSubmit = (e: React.FormEvent<AdminPageFormElements>) => {
+  const handleSelectTeamSubmit = (e: React.FormEvent<SettingsPageFormElements>) => {
     e.preventDefault()
     const teamId = e.currentTarget.elements.team.value
     dispatch(teamSelected(teamId))
@@ -35,10 +30,6 @@ export const Admin = () => {
   return (
     <section>
       <h2>Welcome {userId} </h2>
-      <h3>Upload Rosters</h3>
-      <form id='uploadRosters' onSubmit={handleUploadRostersSubmit}>
-
-      </form>
       <h3>Select a Team to Manage</h3>
       <form id='selectTeam' onSubmit={handleSelectTeamSubmit}>
         <label htmlFor="team">Team</label>

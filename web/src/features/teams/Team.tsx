@@ -8,11 +8,6 @@ const Team = () => {
 
   const { data, error, isLoading } = useGetRosterByTeamIdQuery(teamId || '')
 
-/*
-  const team = useAppSelector(state =>
-    state.rosters.find(roster => roster.teamId === teamId)
-  )
-*/
   const rosterList = data?.map(player => (
     <li key={player.ottoneuId}>{player.playerName}, {player.salary}</li>
   ))
@@ -27,7 +22,7 @@ const Team = () => {
 
   return (
     <section>
-      <article className="post">
+      <article>
         <h2>{teamId}</h2>
         <ul className="roster-list">
           {rosterList}
