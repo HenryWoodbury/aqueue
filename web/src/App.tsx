@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router'
-// https://reactrouter.com/start/declarative/routing
 
 import { NavBar } from './components/NavBar'
 import { Settings } from './features/settings/Settings.tsx'

@@ -22,7 +22,6 @@ const initialState: IPlayer[] = [
 export const selectQueueByTeam = (state: RootState, teamId: string | null) =>
   state.queue.filter(queue => queue.teamId === teamId)
 
-// Create the slice and pass in the initial state
 const queueSlice = createSlice({
   name: 'queue',
   initialState,
@@ -50,5 +49,4 @@ const queueSlice = createSlice({
 
 export const { addPlayer, editPlayer, removePlayer } = queueSlice.actions
 
-// Export the generated reducer function
 export default queueSlice.reducer

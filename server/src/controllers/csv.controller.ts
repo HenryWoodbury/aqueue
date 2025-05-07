@@ -5,6 +5,38 @@ import { Parser as CsvParser } from '@json2csv/plainjs';
 
 import { Rosters, IRosterModel, IRosterProperties } from '../db/models/rosters.model';
 
+const parseRoster = (data: IRosterModel[]) => {
+  const rosters = [] as IRosterProperties[]
+  const csvFields: Array<string> = ['teamId', 'teamName', 'ottoneuId', 'playerName', 'mlbTeam', 'position', 'salary', 'fgMajorLeagueId', 'fgMinorLeagueId']
+  data.forEach((obj) => {    
+    const {
+      teamId, 
+      teamName, 
+      ottoneuId, 
+      playerName, 
+      mlbTeam, 
+      position, 
+      salary, 
+      fgMajorLeagueId,
+      fgMinorLeagueId
+    } = obj;
+    const player = {
+      teamId: teamId, 
+      teamName: teamName, 
+      ottoneuId: ottoneuId, 
+      playerName: playerName, 
+      mlbTeam: mlbTeam, 
+      position: position, 
+      salary: salary, 
+      fgMajorLeagueId: fgMajorLeagueId,
+      fgMinorLeagueId: fgMinorLeagueId
+    };
+    rosters.push(player);
+  });
+  const csvParser = new CsvParser();
+  return csvParser.parse(rosters);
+}
+
 // Could abstract upload for different CSV files
 const uploadRosters = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -85,31 +117,38 @@ const uploadRosters = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 const downloadRosters = (req: Request, res: Response, next: NextFunction) => {
-  Rosters.findAll().then((objs) => {
-    const rosters = [] as IRosterProperties[];;
-    
-    // This will include CreatedAt, UpdatedAt, DeletedAt
-    // Could filter these out easily enough
-    objs.forEach((obj) => {
-      rosters.push({ ...obj });
-    });
-
-    const csvParser = new CsvParser();
-    const csvData = csvParser.parse(rosters);
-
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=rosters.csv');
-
-    res.status(200).end(csvData);
+  Rosters.findAll().then((data) => {
+    const csvData = parseRoster(data);
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="rosters.csv"',
+    })
+    .status(200)
+    .end(csvData)
+//    res.setHeader('Content-Type', 'text/csv');
+//    res.setHeader('Content-Disposition', 'attachment; filename=rosters.csv');
+//    res.status(200).end(csvData);
   });
 };
 
-export { uploadRosters, downloadRosters };
-/*
-    const csvFields = ['id', 'name', 'email',
-                     'username', 'dob', 'company',
-                     'address', 'location', 'salary',
-                     'about', 'role'];
-    const csvParser = new CsvParser({ csvFields });
-    const csvData = csvParser.parse(employees);
-*/
+const downloadRosterByTeamId = (req: Request, res: Response, next: NextFunction) => {
+  const id = parseInt(req.params.teamId)
+  Rosters.findAll({
+    where: {
+      teamId: id.toString(),
+    },    
+  })
+  .then((data) => {
+    const csvData = parseRoster(data);
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=roster.csv');
+    res.status(200).end(csvData);
+  })
+  .catch((err) => {
+    res.status(500).send({
+      message: err.message || "Error while retrieving rosters from the database.",
+    });
+  });
+};
+
+export { uploadRosters, downloadRosters, downloadRosterByTeamId };

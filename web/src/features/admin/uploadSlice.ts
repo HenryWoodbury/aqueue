@@ -4,10 +4,12 @@ import { RootState } from '../../app/store.ts'
 
 export const selectUpload = (state: RootState) => state.upload
 
-// Create an initial state value for the reducer, with that type
-const initialState: [] = []
+interface IUploadResponse {
+  message: string
+}
 
-// Create the slice and pass in the initial state
+const initialState: IUploadResponse = { message :'' }
+
 const uploadSlice = createSlice({
   name: 'upload',
   initialState,

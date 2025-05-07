@@ -1,18 +1,22 @@
 import { Router } from 'express';
 
-import { uploadRosters, downloadRosters } from '../controllers/csv.controller';
+import { uploadRosters, downloadRosters, downloadRosterByTeamId } from '../controllers/csv.controller';
 import { getRosters, getRosterByTeamId } from '../controllers/rosters.controller';
 import uploadFile from '../middleware/upload';
 
 const rostersRoutes = Router();
 
 rostersRoutes
-  .route('/csv/upload')
+  .route('/rosters/upload')
   .post(uploadFile.single('file'), uploadRosters);
 
 rostersRoutes
-  .route('/csv/download')
+  .route('/rosters/download')
   .get(downloadRosters);
+
+rostersRoutes
+  .route('/rosters/download/:teamId')
+  .get(downloadRosterByTeamId);
 
 rostersRoutes
   .route('/rosters')

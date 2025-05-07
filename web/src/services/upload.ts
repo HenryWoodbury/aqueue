@@ -12,7 +12,7 @@ export const uploadApi = createApi({
         console.info(file);
         formData.append('file', file);
         return {
-          url: 'csv/upload',
+          url: 'rosters/upload',
           method: 'POST',
           body: formData
         }
@@ -23,3 +23,5 @@ export const uploadApi = createApi({
 
 export const { useUploadRostersMutation } = uploadApi
 
+// Return value for successful upload is a message
+// { message: 'The file league_100_rosters.csv got uploaded successfully!'}

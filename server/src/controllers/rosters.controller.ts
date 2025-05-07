@@ -20,7 +20,6 @@ const getRosterByTeamId = (req: Request, res: Response, next: NextFunction) => {
   Rosters.findAll({
     where: {
       teamId: id.toString(),
-//      teamId: id.toString(),
     },    
   })
   .then((data) => {

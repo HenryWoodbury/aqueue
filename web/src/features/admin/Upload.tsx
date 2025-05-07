@@ -11,12 +11,13 @@ const Upload = () => {
 
   // The destructured properties are generically named. Something to keep track of.
   const [uploadFile, { data, isLoading, error}] = useUploadRostersMutation()
+  // Consider creating a log history page for the return value of the Mutation
   console.info('data', data)
   console.info('error', error)
-  console.info('isLoading', isLoading)
+  console.info('isLoading', isLoading)  
 
   // Some reading reveals all sorts of details in the way RTK Query handles file upload that
-  // differs from the common axios example.
+  // differs from the axios example I used as a starting point and some older RTK Query guides.
   // 1. Don't use a custom header ("Content-Type": "multipart/form-data") in the uploadApi. 
   // 2. Don't use `formData: true` -- it is no longer needed for a FormData submission
   // 3. RTK Query uses Fetch under the hood which doesn't expose a method to track progress
