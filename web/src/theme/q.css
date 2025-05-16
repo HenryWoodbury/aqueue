@@ -1,0 +1,44 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input, button, textarea, select {
+  font: inherit
+}
+
+main {
+  padding: 16px 16px 8px;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+section {
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+p {
+  padding-bottom: 8px;
+}
+
+button {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  .icon {
+    display: inline-block;
+    height: 18px;
+  }
+  .label {
+    display: inline-block;
+    height: 24px;
+  }
+}

@@ -10,7 +10,7 @@ import { selectTeam } from '../teams/teamSlice'
 
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
 export interface AddToQueueFormFields extends HTMLFormControlsCollection {
-  player: HTMLInputElement
+  playerName: HTMLInputElement
   salary: HTMLInputElement
 }
 
@@ -27,7 +27,7 @@ const AddToQueue = () => {
     e.preventDefault()
     if (!teamId) return;
     const { elements } = e.currentTarget
-    const playerName = elements.player.value
+    const playerName = elements.playerName.value
     const salary = elements.salary.value
     // Create the post object and dispatch the `postAdded` action
     const newPlayer: IPlayer = {

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import App from './App.tsx'
 import { store } from './app/store.ts'
 
-import './theme/q.sass'
+import './theme/q.css'
 
 const rootElement = document.getElementById('root');
 
