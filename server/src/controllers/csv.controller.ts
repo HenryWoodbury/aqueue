@@ -51,6 +51,10 @@ const uploadRosters = async (req: Request, res: Response, next: NextFunction) =>
 
     createReadStream(path)
       .pipe(
+    // Put a try catch around this parse
+    // Otherwise parse can throw an error on a misconfigured csv file
+    // 'Unexpected Error: column header mismatch expected: 9 columns got: 74'
+    // [nodemon] app crashed - waiting for file changes before starting...
         parse({ 
           headers: [
             'teamId',

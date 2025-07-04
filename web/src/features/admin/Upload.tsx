@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef, type RefObject } from 'react'
 
 import { useUploadRostersMutation } from '../../services/upload'
 
 const Upload = () => {
 //  const [data, setData] = useState([]);
+  const uploadRosters: RefObject<HTMLInputElement | null> = useRef(null);
   const [selectedFile, setSelectedFile] = useState<File>()
 //  const [currentFile, setCurrentFile] = useState<File>()
 //  const [progress, setProgress] = useState(0)
@@ -29,24 +30,45 @@ const Upload = () => {
     e.preventDefault();
 //    setCurrentFile(selectedFile)
     uploadFile(selectedFile)
-//    const result = uploadFile(selectedFile)
-// The return value of the callback is a promise
-    setSelectedFile(undefined)
+    const result = uploadFile(selectedFile);
+    result.then(msg => {
+      if (msg.data) {
+        // Could be a toast. Could be configured for internationalization.
+        setMessage(msg.data.message);
+      } else if (msg.error) {
+        // Format as errors
+        // When using fetchBaseQuery, as your base query, errors will be of type FetchBaseQueryError | SerializedError.
+        // FetchBaseQueryError
+        if ('status' in msg.error) {
+          const errMsg = 'error' in msg.error ? msg.error.error : JSON.stringify(msg.error?.data);
+          setMessage(errMsg) 
+        // SerializedError
+        } else if ('message' in msg.error) {
+          setMessage(msg.error.message || '');
+        }
+      }
+    });
+    setSelectedFile(undefined);
+    if (uploadRosters.current) {
+      uploadRosters.current.value = '';
+      uploadRosters.current.type = "text";
+      uploadRosters.current.type = "file";
+    }
   }
 
   const selectFile =  (e: React.FormEvent) => {
-    e.preventDefault()
-    const target = e.target as HTMLInputElement
-    const file = target.files === null ? undefined : target.files[0]
+    e.preventDefault();
+    const target = e.target as HTMLInputElement;
+    const file = target.files === null ? undefined : target.files[0];
 
     if (!file || file?.type !== 'text/csv') {
-      const errorMessage = !file ? 'File not found. Please select a file.' : 'Please upload a .csv file'
-      setMessage(errorMessage)
-      setSelectedFile(undefined)
+      const errorMessage = !file ? 'File not found. Please select a file.' : 'Please upload a .csv file';
+      setMessage(errorMessage);
+      setSelectedFile(undefined);
 //      setCurrentFile(undefined)
       return;
     }
-    setMessage('')
+    setMessage('');
 // This can be used to validate the csv file before it is passed to the API
 /*
     const fileReader = new FileReader()
@@ -99,7 +121,7 @@ const Upload = () => {
 
       <form id="uploadRosters" onSubmit={handleUploadRostersSubmit}>
         <label className="btn btn-default">
-          <input id="upload" type="file" onChange={selectFile} />
+          <input id="upload" type="file" onChange={selectFile} ref={uploadRosters} />
         </label>
         <button 
           type="submit"

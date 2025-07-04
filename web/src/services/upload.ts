@@ -9,7 +9,7 @@ export const uploadApi = createApi({
     uploadRosters: build.mutation({
       query: (file) => {
         const formData = new FormData();
-        console.info(file);
+//        console.info(file);
         formData.append('file', file);
         return {
           url: 'rosters/upload',
@@ -22,6 +22,3 @@ export const uploadApi = createApi({
 })
 
 export const { useUploadRostersMutation } = uploadApi
-
-// Return value for successful upload is a message
-// { message: 'The file league_100_rosters.csv got uploaded successfully!'}
