@@ -64,8 +64,33 @@ const Upload = () => {
   return (
     <section>
       <h2>
-        Upload Rosters
+        Upload
       </h2>
+      <p>
+        CSV Uploads to support
+      </p>
+      <ul>
+        <li>
+          Ottoneu Roster import
+        </li>
+        <li>
+          Ottoneu Player Universe
+        </li>
+        <li>
+          Fangraphs Projections (Steamer, by year, by batter / pitcher)
+        </li>
+      </ul>
+      <p>
+        Utilize an API
+      </p>
+      <ul>
+        <li>
+          MLB Statistics (by year, by batter / pitcher)
+        </li>
+        <li>
+          MLB Statistics (by year, by batter / pitcher)
+        </li>
+      </ul>
       {isLoading ? (
         <div className="loading">
           Loading...
